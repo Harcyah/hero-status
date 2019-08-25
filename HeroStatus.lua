@@ -99,17 +99,27 @@ local function UpdateRepairStatus()
 end
 
 local function IsDefaultEquipmentSetValid()
+	local playerLevel = UnitLevel("player")
+	if (playerLevel < 15) then
+		return true;
+	end
+
 	local equipmentSetID = C_EquipmentSet.GetEquipmentSetID("Default");
 	if (equipmentSetID == nil) then
 		return false;
 	end
 
 	local _, _, _, _, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(equipmentSetID);
-	if (numLost > 0) then
-		return false
+
+	if (numItems ~= numEquipped) then
+		return false;
 	end
 
-	return true
+	if (numLost > 0) then
+		return false;
+	end
+
+	return true;
 end
 
 local function UpdateEquipmentStatus()
