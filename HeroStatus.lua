@@ -1,7 +1,8 @@
 
-local function CreateStatusFrame(name, textureFileName)
+local function CreateStatusFrame(name, textureFileName, r, g, b, a)
 	local frameName = "HeroStatus" .. name .. "Frame";
-	local textureName = "HeroStatus" .. name .. "Texture";
+	local textureBackgroundName = "HeroStatus" .. name .. "TextureBackground";
+	local textureOverlayName = "HeroStatus" .. name .. "TextureOverlay";
 
 	local frame = CreateFrame("Frame", frameName, UIParent);
 	frame:SetSize(32, 32);
@@ -13,22 +14,19 @@ local function CreateStatusFrame(name, textureFileName)
 	frame:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", 20, 20);
 	frame:Show();
 
-	local texture = frame:CreateTexture(textureName, "BACKGROUND");
-	texture:SetTexture(textureFileName);
-	texture:SetAllPoints(frame);
+	local textureBackground = frame:CreateTexture(textureBackgroundName, "BACKGROUND");
+	textureBackground:SetTexture(textureFileName);
+	textureBackground:SetAllPoints(frame);
+
+	local textureOverlay = frame:CreateTexture(textureOverlayName, "OVERLAY");
+	textureOverlay:SetColorTexture(r, g, b, a);
+	textureOverlay:SetAllPoints(frame);
 
 	return frame;
 end
 
-local frameRepairStatusOk = CreateStatusFrame('RepairStatusOk', "Interface\\Icons\\Ability_Repair.blp");
-local frameRepairStatusOkOverlay = frameRepairStatusOk:CreateTexture('RepairStatusTextureOkOverlay', "OVERLAY");
-frameRepairStatusOkOverlay:SetColorTexture(0, 0, 0, 0);
-frameRepairStatusOkOverlay:SetAllPoints(frameRepairStatusOk);
-
-local frameRepairStatusWarn = CreateStatusFrame('RepairStatusWarn', "Interface\\Icons\\Ability_Repair.blp");
-local frameRepairStatusWarnOverlay = frameRepairStatusWarn:CreateTexture('RepairStatusTextureWarnOverlay', "OVERLAY");
-frameRepairStatusWarnOverlay:SetColorTexture(1, 0, 0, 0.25);
-frameRepairStatusWarnOverlay:SetAllPoints(frameRepairStatusWarn);
+local frameRepairStatusOk = CreateStatusFrame('RepairStatusOk', "Interface\\Icons\\Ability_Repair.blp", 0, 0, 0, 0);
+local frameRepairStatusWarn = CreateStatusFrame('RepairStatusWarn', "Interface\\Icons\\Ability_Repair.blp", 1, 0, 0, 0.25);
 
 local function IsRepaired()
 	local SLOTS = {
