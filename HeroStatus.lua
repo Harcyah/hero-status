@@ -108,7 +108,15 @@ local function UpdateRepairStatus()
 end
 
 local function hasJunk()
-	return false;
+	for i = 0, NUM_BAG_SLOTS do
+		for j = 1, GetContainerNumSlots(i) do
+			local _, _, _, quality = GetContainerItemInfo(i, j);
+			if quality == 0 then
+				return true
+			end
+		end
+	end
+	return false
 end
 
 local function UpdateJunkStatus()
@@ -160,11 +168,13 @@ eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 eventFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY");
 eventFrame:RegisterEvent("EQUIPMENT_SETS_CHANGED");
 eventFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
+eventFrame:RegisterEvent("BAG_UPDATE");
 
 eventFrame:SetScript("OnEvent", function(self, event, ...)
 
 	if (event == "PLAYER_ENTERING_WORLD") then
 		UpdateRepairStatus();
+		UpdateJunkStatus();
 		UpdateEquipmentStatus();
 	end
 
@@ -178,6 +188,10 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 
 	if (event == "UNIT_INVENTORY_CHANGED") then
 		UpdateEquipmentStatus();
+	end
+
+	if (event == "BAG_UPDATE") then
+		UpdateJunkStatus();
 	end
 
 end)
