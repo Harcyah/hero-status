@@ -6,7 +6,8 @@ local Y_OFFSET = 20;
 local SPACE = 5;
 
 local INDEX_REPAIR = 0;
-local INDEX_EQUIPMENT = 1;
+local INDEX_JUNK = 1;
+local INDEX_EQUIPMENT = 2;
 
 local function CreateStatusFrame(name, textureFileName, index, r, g, b, a)
 	local frameName = "HeroStatus" .. name .. "Frame";
@@ -54,6 +55,13 @@ local function CreateRepairStatusFrame()
 	return frameOk, frameWarn
 end
 
+local function CreateJunkStatusFrame()
+	local textureName = "Interface\\Icons\\Inv_Misc_Food_Lunchbox_White.blp"
+	local frameOk = CreateStatusFrame('JunkStatusOk', textureName, INDEX_JUNK, 0, 0, 0, 0);
+	local frameWarn = CreateStatusFrame('JunkStatusWarn', textureName, INDEX_JUNK, 1, 0, 0, 0.25);
+	return frameOk, frameWarn
+end
+
 local function CreateEquipmentStatusFrame()
 	local textureName = "Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle.blp"
 	local frameOk = CreateStatusFrame('EquipmentStatusOk', textureName, INDEX_EQUIPMENT, 0, 0, 0, 0);
@@ -61,8 +69,9 @@ local function CreateEquipmentStatusFrame()
 	return frameOk, frameWarn
 end
 
-local frameRepairStatusOk, frameRepairStatusWarn = CreateRepairStatusFrame()
-local frameEquipmentStatusOk, frameEquipmentStatusWarn = CreateEquipmentStatusFrame()
+local frameRepairStatusOk, frameRepairStatusWarn = CreateRepairStatusFrame();
+local frameJunkStatusOk, frameJunkStatusWarn = CreateJunkStatusFrame();
+local frameEquipmentStatusOk, frameEquipmentStatusWarn = CreateEquipmentStatusFrame();
 
 local function IsRepaired()
 	local SLOTS = {
@@ -95,6 +104,20 @@ local function UpdateRepairStatus()
 	else
 		frameRepairStatusOk:Hide();
 		frameRepairStatusWarn:Show();
+	end
+end
+
+local function hasJunk()
+	return false;
+end
+
+local function UpdateJunkStatus()
+	if (hasJunk()) then
+		frameJunkStatusOk:Hide();
+		frameJunkStatusWarn:Show();
+	else
+		frameJunkStatusOk:Show();
+		frameJunkStatusWarn:Hide();
 	end
 end
 
