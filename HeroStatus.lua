@@ -140,9 +140,13 @@ local function IsDefaultEquipmentSetValid()
 		return false;
 	end
 
-	local _, _, _, _, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(equipmentSetID);
+	local _, _, _, _, numItems, numEquipped, numInInventory, numLost = C_EquipmentSet.GetEquipmentSetInfo(equipmentSetID);
 
 	if (numItems ~= numEquipped) then
+		return false;
+	end
+
+	if (numInInventory > 0) then
 		return false;
 	end
 
@@ -197,6 +201,7 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 
 	if (event == "BAG_UPDATE") then
 		UpdateJunkStatus();
+		UpdateEquipmentStatus();
 	end
 
 end)
