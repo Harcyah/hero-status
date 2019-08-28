@@ -167,6 +167,7 @@ local eventFrame = CreateFrame("Frame", "HeroStatusFrame", UIParent);
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 eventFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY");
 eventFrame:RegisterEvent("EQUIPMENT_SETS_CHANGED");
+eventFrame:RegisterEvent("EQUIPMENT_SWAP_FINISHED");
 eventFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
 eventFrame:RegisterEvent("BAG_UPDATE");
 
@@ -183,6 +184,10 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 	end
 
 	if (event == "EQUIPMENT_SETS_CHANGED") then
+		UpdateEquipmentStatus();
+	end
+
+	if (event == "EQUIPMENT_SWAP_FINISHED") then
 		UpdateEquipmentStatus();
 	end
 
