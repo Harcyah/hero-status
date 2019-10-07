@@ -224,35 +224,35 @@ local function IsTransmogSetValid()
 		return false;
 	end
 
-	local dummyDressUpModel = CreateFrame("DressUpModel");
-	dummyDressUpModel:SetUnit("player");
-	dummyDressUpModel.isPlayer = true;
-	dummyDressUpModel:Undress();
+	-- local dummyDressUpModel = CreateFrame("DressUpModel");
+	-- dummyDressUpModel:SetUnit("player");
+	-- dummyDressUpModel.isPlayer = true;
+	-- dummyDressUpModel:Undress();
 
-	local sources, mainHandEnchant, offHandEnchant = C_TransmogCollection.GetOutfitSources(outfit.outfitID);
-	for index, slot in pairs(TRANSMOGRIFICATION_SLOTS) do
-		local slotID = GetInventorySlotInfo(slot);
-		local actualSourceID = select(1, dummyDressUpModel:GetSlotTransmogSources(slotID));
-		local expectedSourceID = sources[slotID];
-		if (not IsValidTransmogApplied(expectedSourceID, actualSourceID)) then
-			print('Invalid transmog on ' .. slot .. ' expected:' .. expectedSourceID .. ' actual:' .. actualSourceID)
-			return false;
-		end
-	end
+	-- local sources, mainHandEnchant, offHandEnchant = C_TransmogCollection.GetOutfitSources(outfit.outfitID);
+	-- for index, slot in pairs(TRANSMOGRIFICATION_SLOTS) do
+	-- 	local slotID = GetInventorySlotInfo(slot);
+	-- 	local actualSourceID = select(1, dummyDressUpModel:GetSlotTransmogSources(slotID));
+	-- 	local expectedSourceID = sources[slotID];
+	-- 	if (not IsValidTransmogApplied(expectedSourceID, actualSourceID)) then
+	-- 		print('Invalid transmog on ' .. slot .. ' expected:' .. expectedSourceID .. ' actual:' .. actualSourceID)
+	-- 		return false;
+	-- 	end
+	-- end
 
-	local mainHandSourceSlotID = GetInventorySlotInfo("MAINHANDSLOT");
-	local mainHandSourceID = select(1, dummyDressUpModel:GetSlotTransmogSources(mainHandSourceSlotID));
-	if (not IsValidTransmogApplied(mainHandSourceID, mainHandEnchant)) then
-		print('Invalid transmog on MAINHANDSLOT')
-		return false;
-	end
+	-- local mainHandSourceSlotID = GetInventorySlotInfo("MAINHANDSLOT");
+	-- local mainHandSourceID = select(1, dummyDressUpModel:GetSlotTransmogSources(mainHandSourceSlotID));
+	-- if (not IsValidTransmogApplied(mainHandSourceID, mainHandEnchant)) then
+	-- 	print('Invalid transmog on MAINHANDSLOT')
+	-- 	return false;
+	-- end
 
-	local offHandSourceSlotID = GetInventorySlotInfo("SECONDARYHANDSLOT");
-	local offHandSourceID = select(2, dummyDressUpModel:GetSlotTransmogSources(offHandSourceSlotID));
-	if (not IsValidTransmogApplied(offHandSourceID, offHandEnchant)) then
-		print('Invalid transmog on SECONDARYHANDSLOT')
-		return false;
-	end
+	-- local offHandSourceSlotID = GetInventorySlotInfo("SECONDARYHANDSLOT");
+	-- local offHandSourceID = select(2, dummyDressUpModel:GetSlotTransmogSources(offHandSourceSlotID));
+	-- if (not IsValidTransmogApplied(offHandSourceID, offHandEnchant)) then
+	-- 	print('Invalid transmog on SECONDARYHANDSLOT')
+	-- 	return false;
+	-- end
 
 	return true;
 end
