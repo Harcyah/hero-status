@@ -8,7 +8,6 @@ local SPACE = 5;
 local INDEX_REPAIR = 0;
 local INDEX_JUNK = 1;
 local INDEX_EQUIPMENT = 2;
-local INDEX_TRANSMOG = 3;
 
 local function CreateStatusFrame(name, textureFileName, index, r, g, b, a)
 	local frameName = "HeroStatus" .. name .. "Frame";
@@ -70,17 +69,9 @@ local function CreateEquipmentStatusFrame()
 	return frameOk, frameWarn
 end
 
-local function CreateTransmogStatusFrame()
-	local textureName = "Interface\\Icons\\achievement_transmog_collections.blp"
-	local frameOk = CreateStatusFrame('TransmogStatusOk', textureName, INDEX_TRANSMOG, 0, 0, 0, 0);
-	local frameWarn = CreateStatusFrame('TransmogStatusWarn', textureName, INDEX_TRANSMOG, 1, 0, 0, 0.25);
-	return frameOk, frameWarn
-end
-
 local frameRepairStatusOk, frameRepairStatusWarn = CreateRepairStatusFrame();
 local frameJunkStatusOk, frameJunkStatusWarn = CreateJunkStatusFrame();
 local frameEquipmentStatusOk, frameEquipmentStatusWarn = CreateEquipmentStatusFrame();
-local frameTransmogStatusOk, frameTransmogStatusWarn = CreateTransmogStatusFrame();
 
 local SLOTS = {
 	'HeadSlot',
@@ -176,97 +167,6 @@ local function UpdateEquipmentStatus()
 	end
 end
 
-local function GetDefaultOutfit()
-	local outfits = C_TransmogCollection.GetOutfits();
-	for i = 1, table.getn(outfits) do
-		local outfit = outfits[i];
-		if (outfit.name == "Default") then
-			return outfit;
-		end
-	end
-	return nil;
-end
-
-local TRANSMOGRIFICATION_SLOTS = {
-	'HEADSLOT',
-	'SHOULDERSLOT',
-	'BACKSLOT',
-	'CHESTSLOT',
-	'TABARDSLOT',
-	'SHIRTSLOT',
-	'WRISTSLOT',
-	'HANDSSLOT',
-	'WAISTSLOT',
-	'LEGSSLOT',
-	'FEETSLOT',
-	'MAINHANDSLOT',
-	'SECONDARYHANDSLOT'
-}
-
-local function IsValidTransmogApplied(expectedSourceID, actualSourceId)
-	if (expectedSourceID == 0) then
-		return true;
-	end
-	if (actualSourceID == 0) then
-		return true;
-	end
-	return expectedSourceID == actualSourceId;
-end
-
-local function IsTransmogSetValid()
-	local playerLevel = UnitLevel("player")
-	if (playerLevel < 15) then
-		return true;
-	end
-
-	local outfit = GetDefaultOutfit()
-	if (outfit == nil) then
-		return false;
-	end
-
-	-- local dummyDressUpModel = CreateFrame("DressUpModel");
-	-- dummyDressUpModel:SetUnit("player");
-	-- dummyDressUpModel.isPlayer = true;
-	-- dummyDressUpModel:Undress();
-
-	-- local sources, mainHandEnchant, offHandEnchant = C_TransmogCollection.GetOutfitSources(outfit.outfitID);
-	-- for index, slot in pairs(TRANSMOGRIFICATION_SLOTS) do
-	-- 	local slotID = GetInventorySlotInfo(slot);
-	-- 	local actualSourceID = select(1, dummyDressUpModel:GetSlotTransmogSources(slotID));
-	-- 	local expectedSourceID = sources[slotID];
-	-- 	if (not IsValidTransmogApplied(expectedSourceID, actualSourceID)) then
-	-- 		print('Invalid transmog on ' .. slot .. ' expected:' .. expectedSourceID .. ' actual:' .. actualSourceID)
-	-- 		return false;
-	-- 	end
-	-- end
-
-	-- local mainHandSourceSlotID = GetInventorySlotInfo("MAINHANDSLOT");
-	-- local mainHandSourceID = select(1, dummyDressUpModel:GetSlotTransmogSources(mainHandSourceSlotID));
-	-- if (not IsValidTransmogApplied(mainHandSourceID, mainHandEnchant)) then
-	-- 	print('Invalid transmog on MAINHANDSLOT')
-	-- 	return false;
-	-- end
-
-	-- local offHandSourceSlotID = GetInventorySlotInfo("SECONDARYHANDSLOT");
-	-- local offHandSourceID = select(2, dummyDressUpModel:GetSlotTransmogSources(offHandSourceSlotID));
-	-- if (not IsValidTransmogApplied(offHandSourceID, offHandEnchant)) then
-	-- 	print('Invalid transmog on SECONDARYHANDSLOT')
-	-- 	return false;
-	-- end
-
-	return true;
-end
-
-local function UpdateTransmogStatus()
-	if (IsTransmogSetValid()) then
-		frameTransmogStatusOk:Show();
-		frameTransmogStatusWarn:Hide();
-	else
-		frameTransmogStatusOk:Hide();
-		frameTransmogStatusWarn:Show();
-	end
-end
-
 local eventFrame = CreateFrame("Frame", "HeroStatusFrame", UIParent);
 eventFrame:RegisterEvent("BAG_UPDATE");
 eventFrame:RegisterEvent("EQUIPMENT_SETS_CHANGED");
@@ -281,28 +181,20 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 	if (event == "BAG_UPDATE") then
 		UpdateJunkStatus();
 		UpdateEquipmentStatus();
-		UpdateTransmogStatus();
 	end
 
 	if (event == "EQUIPMENT_SETS_CHANGED") then
 		UpdateEquipmentStatus();
-		UpdateTransmogStatus();
 	end
 
 	if (event == "EQUIPMENT_SWAP_FINISHED") then
 		UpdateEquipmentStatus();
-		UpdateTransmogStatus();
 	end
 
 	if (event == "PLAYER_ENTERING_WORLD") then
 		UpdateRepairStatus();
 		UpdateJunkStatus();
 		UpdateEquipmentStatus();
-		UpdateTransmogStatus();
-	end
-
-	if (event == "TRANSMOGRIFY_SUCCESS") then
-		UpdateTransmogStatus();
 	end
 
 	if (event == "UNIT_INVENTORY_CHANGED") then
