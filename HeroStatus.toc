@@ -1,4 +1,4 @@
 ## Title: HeroStatus
-## Interface: 80200
+## Interface: 80300
 ## Notes: Display character status
 HeroStatus.lua
