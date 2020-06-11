@@ -10,6 +10,14 @@ local INDEX_EQUIPMENT = 1;
 local INDEX_TRANSMOG = 2;
 local INDEX_JUNK = 3;
 
+local DEBUG = false;
+
+local function Log(message)
+	if (DEBUG) then
+		DEFAULT_CHAT_FRAME:AddMessage(message);
+	end
+end
+
 local function CreateStatusFrame(name, textureFileName, index, r, g, b, a)
 	local frameName = "HeroStatus" .. name .. "Frame";
 	local textureBackgroundName = "HeroStatus" .. name .. "TextureBackground";
@@ -64,7 +72,7 @@ local function CreateEquipmentStatusFrame()
 end
 
 local function CreateTransmogStatusFrame()
-	local textureName = "Interface\\Icons\\ability_racial_dispelillusions.blp"
+	local textureName = "Interface\\Icons\\garrison_building_armory.blp"
 	local frameOk = CreateStatusFrame('EquipmentTransmogOk', textureName, INDEX_TRANSMOG, 0, 0, 0, 0);
 	local frameWarn = CreateStatusFrame('EquipmentTransmogWarn', textureName, INDEX_TRANSMOG, 1, 0, 0, 0.25);
 	return frameOk, frameWarn
@@ -107,10 +115,10 @@ local TRANSMOG_SLOTS = {
 	[9]  = { slot = "WAISTSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_WAIST },
 	[10] = { slot = "LEGSSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_LEGS },
 	[11] = { slot = "FEETSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_FEET },
-	[12] = { slot = "MAINHANDSLOT", 		transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = nil },
-	[13] = { slot = "SECONDARYHANDSLOT", 	transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = nil },
-	[14] = { slot = "MAINHANDSLOT", 		transmogType = LE_TRANSMOG_TYPE_ILLUSION,	armorCategoryID = nil },
-	[15] = { slot = "SECONDARYHANDSLOT",	transmogType = LE_TRANSMOG_TYPE_ILLUSION,	armorCategoryID = nil },
+	-- [12] = { slot = "MAINHANDSLOT", 		transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = nil },
+	-- [13] = { slot = "SECONDARYHANDSLOT", 	transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = nil },
+	-- [14] = { slot = "MAINHANDSLOT", 		transmogType = LE_TRANSMOG_TYPE_ILLUSION,	armorCategoryID = nil },
+	-- [15] = { slot = "SECONDARYHANDSLOT",	transmogType = LE_TRANSMOG_TYPE_ILLUSION,	armorCategoryID = nil },
 }
 
 local function IsRepaired()
@@ -202,7 +210,7 @@ local function IsDefaultTransmogApplied()
 
 	local outfits = C_TransmogCollection.GetOutfits();
 	if ( #outfits == 0 ) then
-		DEFAULT_CHAT_FRAME:AddMessage('Unable to find any outfit');
+		Log('Unable to find any outfit');
 		return false;
 	end
 
@@ -213,13 +221,13 @@ local function IsDefaultTransmogApplied()
 		end
 	end
 	if (id == nil) then
-		DEFAULT_CHAT_FRAME:AddMessage('Unable to find default outfit');
+		Log('Unable to find default outfit');
 		return false;
 	end
 
 	local appearanceSources, mainHandEnchant, offHandEnchant = C_TransmogCollection.GetOutfitSources(id);
 	if (not appearanceSources) then
-		DEFAULT_CHAT_FRAME:AddMessage('No appearances in default outfit');
+		Log('No appearances in default outfit');
 		return false;
 	end
 
@@ -227,10 +235,16 @@ local function IsDefaultTransmogApplied()
 		if (TRANSMOG_SLOTS[index].transmogType == LE_TRANSMOG_TYPE_APPEARANCE) then
 			local slot = TRANSMOG_SLOTS[index].slot;
 			local slotID = GetInventorySlotInfo(slot);
-			local appearanceSourceID = appearanceSources[slotID]
+			local expectedSourceID = appearanceSources[slotID]
 			local baseSourceID, baseVisualID, appliedSourceID, appliedVisualID = C_Transmog.GetSlotVisualInfo(slotID, LE_TRANSMOG_TYPE_APPEARANCE);
-			if (appliedSourceID ~= 0 and appliedSourceID ~= appearanceSourceID) then
-				DEFAULT_CHAT_FRAME:AddMessage('On slot ' .. slot .. ', found ' .. tostring(appliedSourceID) .. ', expecting ' .. tostring(appearanceSourceID));
+
+			if (expectedSourceID ~= baseSourceID and appliedSourceID == 0 and expectedSourceID ~= 0) then
+				Log('On slot ' .. slot .. ', expected ' .. tostring(expectedSourceID) .. ', but found 0');
+				return false
+			end
+
+			if (expectedSourceID ~= baseSourceID and appliedSourceID ~= 0 and appliedSourceID ~= expectedSourceID) then
+				Log('On slot ' .. slot .. ', expected ' .. tostring(expectedSourceID) .. ', but found ' .. tostring(appliedSourceID));
 				return false
 			end
 		end
@@ -289,6 +303,7 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 
 	if (event == "UNIT_INVENTORY_CHANGED") then
 		UpdateEquipmentStatus();
+		UpdateTransmogStatus();
 	end
 
 	if (event == "UPDATE_INVENTORY_DURABILITY") then
