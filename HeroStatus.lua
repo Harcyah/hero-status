@@ -9,12 +9,30 @@ local INDEX_REPAIR = 0;
 local INDEX_EQUIPMENT = 1;
 local INDEX_TRANSMOG = 2;
 local INDEX_JUNK = 3;
+local INDEX_MISSIONS_STATUS_WOD = 4;
+local INDEX_MISSIONS_STATUS_BFA = 5;
 
 local DEBUG = false;
 
 local function Log(message)
 	if (DEBUG) then
 		DEFAULT_CHAT_FRAME:AddMessage(message);
+	end
+end
+
+local function LogTable(table, indent)
+	if not indent then
+		indent = 0
+	end
+
+	for k, v in pairs(table) do
+		local formatting = string.rep("  ", indent) .. k .. ": "
+		if type(v) == "table" then
+			Log(formatting)
+			LogTable(v, indent+1)
+		else
+			Log(formatting .. tostring(v))
+		end
 	end
 end
 
@@ -48,6 +66,7 @@ local function CreateStatusFrame(name, textureFileName, index, r, g, b, a)
 
 	local textureBackground = frame:CreateTexture(textureBackgroundName, "ARTWORK");
 	textureBackground:SetTexture(textureFileName);
+	textureBackground:SetDesaturated(1.0);
 	textureBackground:SetAllPoints(frame);
 
 	local textureOverlay = frame:CreateTexture(textureOverlayName, "OVERLAY");
@@ -85,10 +104,26 @@ local function CreateJunkStatusFrame()
 	return frameOk, frameWarn
 end
 
+local function CreateMissionsStatusWodFrame()
+	local textureName = "Interface\\Icons\\spell_shadow_demoniccircleteleport.blp"
+	local frameOk = CreateStatusFrame('MissionsStatusWodOk', textureName, INDEX_MISSIONS_STATUS_WOD, 0, 0, 0, 0);
+	local frameWarn = CreateStatusFrame('MissionsStatusWodWarn', textureName, INDEX_MISSIONS_STATUS_WOD, 1, 0, 0, 0.25);
+	return frameOk, frameWarn
+end
+
+local function CreateMissionsStatusBfaFrame()
+	local textureName = "Interface\\Icons\\inv_currency_petbattle.blp"
+	local frameOk = CreateStatusFrame('MissionsStatusBfaOk', textureName, INDEX_MISSIONS_STATUS_BFA, 0, 0, 0, 0);
+	local frameWarn = CreateStatusFrame('MissionsStatusBfaWarn', textureName, INDEX_MISSIONS_STATUS_BFA, 1, 0, 0, 0.25);
+	return frameOk, frameWarn
+end
+
 local frameRepairStatusOk, frameRepairStatusWarn = CreateRepairStatusFrame();
 local frameJunkStatusOk, frameJunkStatusWarn = CreateJunkStatusFrame();
 local frameEquipmentStatusOk, frameEquipmentStatusWarn = CreateEquipmentStatusFrame();
 local frameTransmogStatusOk, frameTransmogStatusWarn = CreateTransmogStatusFrame();
+local frameMissionsStatusWodOk, frameMissionsStatusWodWarn = CreateMissionsStatusWodFrame();
+local frameMissionsStatusBfaOk, frameMissionsStatusBfaWarn = CreateMissionsStatusBfaFrame();
 
 local SLOTS = {
 	'HeadSlot',
@@ -263,6 +298,65 @@ local function UpdateTransmogStatus()
 	end
 end
 
+local function HasExpectedMissionReward(mission, expectedRewardItemID)
+	local missionRewards = mission.rewards;
+	if (missionRewards == nil) then
+		return false;
+	end
+
+	local firstReward = missionRewards[1];
+	if (firstReward == nil) then
+		return false;
+	end
+
+	local itemID = firstReward.itemID;
+	return itemID == expectedRewardItemID;
+end
+
+local function IsMissionAvailableWithReward(expansionID, expansionName, expectedReward)
+	local missions = C_Garrison.GetAvailableMissions(expansionID);
+	if (missions == nil) then
+		Log("no mission")
+		return false
+	end
+
+	for i = 1, #missions do
+		local mission = missions[i];
+		if (HasExpectedMissionReward(mission, expectedReward) and mission.completed == false and mission.inProgress == false) then
+			Log(expansionName .. ' mission ' .. mission.name .. ' has reward !')
+			return true;
+		end
+	end
+
+	Log("no available mission")
+	return false
+end
+
+local function UpdateMissionsStatusWod()
+	if (IsMissionAvailableWithReward(LE_FOLLOWER_TYPE_GARRISON_6_0, "WoD", 128315) == false) then
+		frameMissionsStatusWodOk:Show();
+		frameMissionsStatusWodWarn:Hide();
+	else
+		frameMissionsStatusWodOk:Hide();
+		frameMissionsStatusWodWarn:Show();
+	end
+end
+
+local function UpdateMissionsStatusBfa()
+	if (IsMissionAvailableWithReward(LE_FOLLOWER_TYPE_GARRISON_8_0, "BFA", 163036) == false) then
+		frameMissionsStatusBfaOk:Show();
+		frameMissionsStatusBfaWarn:Hide();
+	else
+		frameMissionsStatusBfaOk:Hide();
+		frameMissionsStatusBfaWarn:Show();
+	end
+end
+
+local function UpdateMissionsStatuses()
+	UpdateMissionsStatusWod();
+	UpdateMissionsStatusBfa();
+end
+
 local eventFrame = CreateFrame("Frame", "HeroStatusFrame", UIParent);
 eventFrame:RegisterEvent("BAG_UPDATE");
 eventFrame:RegisterEvent("EQUIPMENT_SETS_CHANGED");
@@ -272,6 +366,7 @@ eventFrame:RegisterEvent("TRANSMOGRIFY_SUCCESS");
 eventFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
 eventFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY");
 eventFrame:RegisterEvent("TRANSMOG_OUTFITS_CHANGED");
+eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 
 eventFrame:SetScript("OnEvent", function(self, event, ...)
 
@@ -299,6 +394,7 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 		UpdateJunkStatus();
 		UpdateEquipmentStatus();
 		UpdateTransmogStatus();
+		UpdateMissionsStatuses();
 	end
 
 	if (event == "UNIT_INVENTORY_CHANGED") then
@@ -312,6 +408,10 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 
 	if (event == "TRANSMOG_OUTFITS_CHANGED") then
 		UpdateTransmogStatus();
+	end
+
+	if (event == "ZONE_CHANGED_NEW_AREA") then
+		UpdateMissionsStatuses();
 	end
 
 end)
