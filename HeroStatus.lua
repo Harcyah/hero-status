@@ -367,6 +367,7 @@ eventFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
 eventFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY");
 eventFrame:RegisterEvent("TRANSMOG_OUTFITS_CHANGED");
 eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+eventFrame:RegisterEvent("GARRISON_MISSION_LIST_UPDATE");
 
 eventFrame:SetScript("OnEvent", function(self, event, ...)
 
@@ -411,6 +412,10 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 	end
 
 	if (event == "ZONE_CHANGED_NEW_AREA") then
+		UpdateMissionsStatuses();
+	end
+
+	if (event == "GARRISON_MISSION_LIST_UPDATE") then
 		UpdateMissionsStatuses();
 	end
 
