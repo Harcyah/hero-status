@@ -10,7 +10,8 @@ local INDEX_EQUIPMENT = 1;
 local INDEX_TRANSMOG = 2;
 local INDEX_JUNK = 3;
 local INDEX_MISSIONS_STATUS_WOD = 4;
-local INDEX_MISSIONS_STATUS_BFA = 5;
+local INDEX_MISSIONS_STATUS_LEG = 5;
+local INDEX_MISSIONS_STATUS_BFA = 6;
 
 local DEBUG = false;
 
@@ -111,6 +112,13 @@ local function CreateMissionsStatusWodFrame()
 	return frameOk, frameWarn
 end
 
+local function CreateMissionsStatusLegFrame()
+	local textureName = "Interface\\Icons\\ability_pvp_gladiatormedallion.blp"
+	local frameOk = CreateStatusFrame('MissionsStatusLegOk', textureName, INDEX_MISSIONS_STATUS_LEG, 0, 0, 0, 0);
+	local frameWarn = CreateStatusFrame('MissionsStatusLegWarn', textureName, INDEX_MISSIONS_STATUS_LEG, 1, 0, 0, 0.25);
+	return frameOk, frameWarn
+end
+
 local function CreateMissionsStatusBfaFrame()
 	local textureName = "Interface\\Icons\\inv_currency_petbattle.blp"
 	local frameOk = CreateStatusFrame('MissionsStatusBfaOk', textureName, INDEX_MISSIONS_STATUS_BFA, 0, 0, 0, 0);
@@ -123,6 +131,7 @@ local frameJunkStatusOk, frameJunkStatusWarn = CreateJunkStatusFrame();
 local frameEquipmentStatusOk, frameEquipmentStatusWarn = CreateEquipmentStatusFrame();
 local frameTransmogStatusOk, frameTransmogStatusWarn = CreateTransmogStatusFrame();
 local frameMissionsStatusWodOk, frameMissionsStatusWodWarn = CreateMissionsStatusWodFrame();
+local frameMissionsStatusLegOk, frameMissionsStatusLegWarn = CreateMissionsStatusLegFrame();
 local frameMissionsStatusBfaOk, frameMissionsStatusBfaWarn = CreateMissionsStatusBfaFrame();
 
 local SLOTS = {
@@ -296,19 +305,22 @@ local function UpdateTransmogStatus()
 	end
 end
 
-local function HasExpectedMissionReward(mission, expectedRewardItemID)
-	local missionRewards = mission.rewards;
-	if (missionRewards == nil) then
+local function HasExpectedMissionRewardFrom(rewards, expectedRewardItemID)
+	if (rewards == nil) then
 		return false;
 	end
 
-	local firstReward = missionRewards[1];
+	local firstReward = rewards[1];
 	if (firstReward == nil) then
 		return false;
 	end
 
 	local itemID = firstReward.itemID;
 	return itemID == expectedRewardItemID;
+end
+
+local function HasExpectedMissionReward(mission, expectedRewardItemID)
+	return HasExpectedMissionRewardFrom(mission.rewards, expectedRewardItemID) or HasExpectedMissionRewardFrom(mission.overmaxRewards, expectedRewardItemID);
 end
 
 local function IsMissionAvailableWithReward(expansionID, expansionName, expectedReward)
@@ -340,6 +352,16 @@ local function UpdateMissionsStatusWod()
 	end
 end
 
+local function UpdateMissionsStatusLeg()
+	if (IsMissionAvailableWithReward(LE_FOLLOWER_TYPE_GARRISON_7_0, "LEG", 137642) == false) then
+		frameMissionsStatusLegOk:Show();
+		frameMissionsStatusLegWarn:Hide();
+	else
+		frameMissionsStatusLegOk:Hide();
+		frameMissionsStatusLegWarn:Show();
+	end
+end
+
 local function UpdateMissionsStatusBfa()
 	if (IsMissionAvailableWithReward(LE_FOLLOWER_TYPE_GARRISON_8_0, "BFA", 163036) == false) then
 		frameMissionsStatusBfaOk:Show();
@@ -352,6 +374,7 @@ end
 
 local function UpdateMissionsStatuses()
 	UpdateMissionsStatusWod();
+	UpdateMissionsStatusLeg();
 	UpdateMissionsStatusBfa();
 end
 
