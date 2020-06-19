@@ -139,21 +139,19 @@ local SLOTS = {
 }
 
 local TRANSMOG_SLOTS = {
-	[1]  = { slot = "HEADSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_HEAD },
-	[2]  = { slot = "SHOULDERSLOT", 		transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_SHOULDER },
-	[3]  = { slot = "BACKSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_BACK },
-	[4]  = { slot = "CHESTSLOT",		 	transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_CHEST },
-	[5]  = { slot = "TABARDSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_TABARD },
-	[6]  = { slot = "SHIRTSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_SHIRT },
-	[7]  = { slot = "WRISTSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_WRIST },
-	[8]  = { slot = "HANDSSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_HANDS },
-	[9]  = { slot = "WAISTSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_WAIST },
-	[10] = { slot = "LEGSSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_LEGS },
-	[11] = { slot = "FEETSLOT", 			transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = LE_TRANSMOG_COLLECTION_TYPE_FEET },
-	-- [12] = { slot = "MAINHANDSLOT", 		transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = nil },
-	-- [13] = { slot = "SECONDARYHANDSLOT", 	transmogType = LE_TRANSMOG_TYPE_APPEARANCE,	armorCategoryID = nil },
-	-- [14] = { slot = "MAINHANDSLOT", 		transmogType = LE_TRANSMOG_TYPE_ILLUSION,	armorCategoryID = nil },
-	-- [15] = { slot = "SECONDARYHANDSLOT",	transmogType = LE_TRANSMOG_TYPE_ILLUSION,	armorCategoryID = nil },
+	[1]  = { slot = "HEADSLOT" },
+	[2]  = { slot = "SHOULDERSLOT" },
+	[3]  = { slot = "BACKSLOT" },
+	[4]  = { slot = "CHESTSLOT" },
+	[5]  = { slot = "TABARDSLOT" },
+	[6]  = { slot = "SHIRTSLOT" },
+	[7]  = { slot = "WRISTSLOT" },
+	[8]  = { slot = "HANDSSLOT" },
+	[9]  = { slot = "WAISTSLOT" },
+	[10] = { slot = "LEGSSLOT" },
+	[11] = { slot = "FEETSLOT" },
+	[12] = { slot = "MAINHANDSLOT" },
+	[13] = { slot = "SECONDARYHANDSLOT" }
 }
 
 local function IsRepaired()
@@ -267,9 +265,9 @@ local function IsDefaultTransmogApplied()
 	end
 
 	for index, value in pairs(TRANSMOG_SLOTS) do
-		if (TRANSMOG_SLOTS[index].transmogType == LE_TRANSMOG_TYPE_APPEARANCE) then
-			local slot = TRANSMOG_SLOTS[index].slot;
-			local slotID = GetInventorySlotInfo(slot);
+		local slot = TRANSMOG_SLOTS[index].slot;
+		local slotID = GetInventorySlotInfo(slot);
+		if (GetInventoryItemLink("player", slot) ~= nil) then
 			local expectedSourceID = appearanceSources[slotID]
 			local baseSourceID, baseVisualID, appliedSourceID, appliedVisualID = C_Transmog.GetSlotVisualInfo(slotID, LE_TRANSMOG_TYPE_APPEARANCE);
 
