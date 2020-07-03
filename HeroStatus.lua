@@ -5,13 +5,14 @@ local X_OFFSET = 20;
 local Y_OFFSET = 20;
 local SPACE = 5;
 
-local INDEX_REPAIR = 0;
-local INDEX_EQUIPMENT = 1;
-local INDEX_TRANSMOG = 2;
-local INDEX_JUNK = 3;
-local INDEX_MISSIONS_STATUS_WOD = 4;
-local INDEX_MISSIONS_STATUS_LEG = 5;
-local INDEX_MISSIONS_STATUS_BFA = 6;
+local INDEX_REPAIR_STATUS = 0;
+local INDEX_EQUIPMENT_STATUS = 1;
+local INDEX_TRANSMOG_STATUS = 2;
+local INDEX_JUNK_STATUS = 3;
+local INDEX_MISSIONS_STATUS_MEDALLION_OF_THE_LEGION = 4;
+local INDEX_MISSIONS_STATUS_GLADIATOR_MEDALLION = 5;
+local INDEX_MISSIONS_STATUS_POLISHED_PET_CHARM = 6;
+local INDEX_MISSIONS_STATUS_TIMEWARPED_BADGE = 7;
 
 local DEBUG = false;
 
@@ -77,62 +78,52 @@ local function CreateStatusFrame(name, textureFileName, index, r, g, b, a)
 	return frame;
 end
 
+local function CreateStatusFrames(frameName, textureName, index)
+	local frameOk = CreateStatusFrame(frameName .. 'Ok', textureName, index, 0, 0, 0, 0);
+	local frameWarn = CreateStatusFrame(frameName .. 'Warn', textureName, index, 1, 0, 0, 0.25);
+	return frameOk, frameWarn;
+end
+
 local function CreateRepairStatusFrame()
-	local textureName = "Interface\\Icons\\Ability_Repair.blp"
-	local frameOk = CreateStatusFrame('RepairStatusOk', textureName, INDEX_REPAIR, 0, 0, 0, 0);
-	local frameWarn = CreateStatusFrame('RepairStatusWarn', textureName, INDEX_REPAIR, 1, 0, 0, 0.25);
-	return frameOk, frameWarn
+	return CreateStatusFrames('RepairStatus', 'Interface\\Icons\\Ability_Repair.blp', INDEX_REPAIR_STATUS);
 end
 
 local function CreateEquipmentStatusFrame()
-	local textureName = "Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle.blp"
-	local frameOk = CreateStatusFrame('EquipmentStatusOk', textureName, INDEX_EQUIPMENT, 0, 0, 0, 0);
-	local frameWarn = CreateStatusFrame('EquipmentStatusWarn', textureName, INDEX_EQUIPMENT, 1, 0, 0, 0.25);
-	return frameOk, frameWarn
+	return CreateStatusFrames('EquipmentStatus', 'Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle.blp', INDEX_EQUIPMENT_STATUS);
 end
 
 local function CreateTransmogStatusFrame()
-	local textureName = "Interface\\Icons\\garrison_building_armory.blp"
-	local frameOk = CreateStatusFrame('EquipmentTransmogOk', textureName, INDEX_TRANSMOG, 0, 0, 0, 0);
-	local frameWarn = CreateStatusFrame('EquipmentTransmogWarn', textureName, INDEX_TRANSMOG, 1, 0, 0, 0.25);
-	return frameOk, frameWarn
+	return CreateStatusFrames('TransmogStatus', "Interface\\Icons\\garrison_building_armory.blp", INDEX_TRANSMOG_STATUS);
 end
 
 local function CreateJunkStatusFrame()
-	local textureName = "Interface\\Icons\\Inv_Misc_Food_Lunchbox_White.blp"
-	local frameOk = CreateStatusFrame('JunkStatusOk', textureName, INDEX_JUNK, 0, 0, 0, 0);
-	local frameWarn = CreateStatusFrame('JunkStatusWarn', textureName, INDEX_JUNK, 1, 0, 0, 0.25);
-	return frameOk, frameWarn
+	return CreateStatusFrames('JunkStatus', "Interface\\Icons\\Inv_Misc_Food_Lunchbox_White.blp", INDEX_JUNK_STATUS);
 end
 
-local function CreateMissionsStatusWodFrame()
-	local textureName = "Interface\\Icons\\spell_shadow_demoniccircleteleport.blp"
-	local frameOk = CreateStatusFrame('MissionsStatusWodOk', textureName, INDEX_MISSIONS_STATUS_WOD, 0, 0, 0, 0);
-	local frameWarn = CreateStatusFrame('MissionsStatusWodWarn', textureName, INDEX_MISSIONS_STATUS_WOD, 1, 0, 0, 0.25);
-	return frameOk, frameWarn
+local function CreateMissionsStatusMedallionOfTheLegionFrame()
+	return CreateStatusFrames('MissionsStatusMedallionOfTheLegion', "Interface\\Icons\\spell_shadow_demoniccircleteleport.blp", INDEX_MISSIONS_STATUS_MEDALLION_OF_THE_LEGION);
 end
 
-local function CreateMissionsStatusLegFrame()
-	local textureName = "Interface\\Icons\\ability_pvp_gladiatormedallion.blp"
-	local frameOk = CreateStatusFrame('MissionsStatusLegOk', textureName, INDEX_MISSIONS_STATUS_LEG, 0, 0, 0, 0);
-	local frameWarn = CreateStatusFrame('MissionsStatusLegWarn', textureName, INDEX_MISSIONS_STATUS_LEG, 1, 0, 0, 0.25);
-	return frameOk, frameWarn
+local function CreateMissionsStatusGladiatorMedallionFrame()
+	return CreateStatusFrames('MissionsStatusGladiatorMedallion', "Interface\\Icons\\ability_pvp_gladiatormedallion.blp", INDEX_MISSIONS_STATUS_GLADIATOR_MEDALLION);
 end
 
-local function CreateMissionsStatusBfaFrame()
-	local textureName = "Interface\\Icons\\inv_currency_petbattle.blp"
-	local frameOk = CreateStatusFrame('MissionsStatusBfaOk', textureName, INDEX_MISSIONS_STATUS_BFA, 0, 0, 0, 0);
-	local frameWarn = CreateStatusFrame('MissionsStatusBfaWarn', textureName, INDEX_MISSIONS_STATUS_BFA, 1, 0, 0, 0.25);
-	return frameOk, frameWarn
+local function CreateMissionsStatusPolishedPetCharmFrame()
+	return CreateStatusFrames('MissionsStatusPolishedPetCharm', "Interface\\Icons\\inv_currency_petbattle.blp", INDEX_MISSIONS_STATUS_POLISHED_PET_CHARM);
+end
+
+local function CreateMissionsStatusTimewarpedBadgeFrame()
+	return CreateStatusFrames('MissionsStatusTimewarpedBadge', "Interface\\Icons\\pvecurrency-justice.blp", INDEX_MISSIONS_STATUS_TIMEWARPED_BADGE);
 end
 
 local frameRepairStatusOk, frameRepairStatusWarn = CreateRepairStatusFrame();
 local frameJunkStatusOk, frameJunkStatusWarn = CreateJunkStatusFrame();
 local frameEquipmentStatusOk, frameEquipmentStatusWarn = CreateEquipmentStatusFrame();
 local frameTransmogStatusOk, frameTransmogStatusWarn = CreateTransmogStatusFrame();
-local frameMissionsStatusWodOk, frameMissionsStatusWodWarn = CreateMissionsStatusWodFrame();
-local frameMissionsStatusLegOk, frameMissionsStatusLegWarn = CreateMissionsStatusLegFrame();
-local frameMissionsStatusBfaOk, frameMissionsStatusBfaWarn = CreateMissionsStatusBfaFrame();
+local frameMissionsStatusMedallionOfTheLegionOk, frameMissionsStatusMedallionOfTheLegionWarn = CreateMissionsStatusMedallionOfTheLegionFrame();
+local frameMissionsStatusGladiatorMedallionOk, frameMissionsStatusGladiatorMedallionWarn = CreateMissionsStatusGladiatorMedallionFrame();
+local frameMissionsStatusPolishedPetCharmOk, frameMissionsStatusPolishedPetCharmWarn = CreateMissionsStatusPolishedPetCharmFrame();
+local frameMissionsStatusTimewarpedBadgeOk, frameMissionsStatusTimewarpedBadgeWarn = CreateMissionsStatusTimewarpedBadgeFrame();
 
 local SLOTS = {
 	'HeadSlot',
@@ -305,7 +296,7 @@ local function UpdateTransmogStatus()
 	end
 end
 
-local function HasExpectedMissionRewardFrom(rewards, expectedRewardItemID)
+local function HasExpectedMissionRewardFrom(rewards, expectedRewardFn, expectedRewardID)
 	if (rewards == nil) then
 		return false;
 	end
@@ -315,67 +306,75 @@ local function HasExpectedMissionRewardFrom(rewards, expectedRewardItemID)
 		return false;
 	end
 
-	local itemID = firstReward.itemID;
-	return itemID == expectedRewardItemID;
+	local rewardID = expectedRewardFn(firstReward);
+	return rewardID == expectedRewardID;
 end
 
-local function HasExpectedMissionReward(mission, expectedRewardItemID)
-	return HasExpectedMissionRewardFrom(mission.rewards, expectedRewardItemID) or HasExpectedMissionRewardFrom(mission.overmaxRewards, expectedRewardItemID);
+local function HasExpectedMissionReward(mission, expectedRewardFn, expectedRewardID)
+	return HasExpectedMissionRewardFrom(mission.rewards, expectedRewardFn, expectedRewardID) or HasExpectedMissionRewardFrom(mission.overmaxRewards, expectedRewardFn, expectedRewardID);
 end
 
-local function IsMissionAvailableWithReward(expansionID, expansionName, expectedReward)
+local function UpdateMissionsStatus(expansionID, rewardName, expectedRewardID, expectedRewardFn, frameOk, frameWarn)
 	local missions = C_Garrison.GetAvailableMissions(expansionID);
 	if (missions == nil) then
-		Log("no mission")
-		return false
+		frameOk:Show();
+		frameWarn:Hide();
+		Log("no mission available for expansion " .. tostring(expansionID))
+		return;
 	end
 
 	for i = 1, #missions do
 		local mission = missions[i];
-		if (HasExpectedMissionReward(mission, expectedReward) and mission.completed == false and mission.inProgress == false) then
-			Log(expansionName .. ' mission ' .. mission.name .. ' has reward !')
-			return true;
+		if (HasExpectedMissionReward(mission, expectedRewardFn, expectedRewardID) and mission.completed == false and mission.inProgress == false) then
+			frameOk:Hide();
+			frameWarn:Show();
+			Log("found mission " .. mission.name .. " with reward " .. rewardName)
+			return;
 		end
 	end
 
-	Log("no available mission")
-	return false
+	frameOk:Show();
+	frameWarn:Hide();
+	Log("no mission found on expansion " .. tostring(expansionID) .. " for reward " .. rewardName)
 end
 
-local function UpdateMissionsStatusWod()
-	if (IsMissionAvailableWithReward(LE_FOLLOWER_TYPE_GARRISON_6_0, "WoD", 128315) == false) then
-		frameMissionsStatusWodOk:Show();
-		frameMissionsStatusWodWarn:Hide();
-	else
-		frameMissionsStatusWodOk:Hide();
-		frameMissionsStatusWodWarn:Show();
-	end
+local function GetMissionRewardItemId(reward)
+	return reward.itemID;
 end
 
-local function UpdateMissionsStatusLeg()
-	if (IsMissionAvailableWithReward(LE_FOLLOWER_TYPE_GARRISON_7_0, "LEG", 137642) == false) then
-		frameMissionsStatusLegOk:Show();
-		frameMissionsStatusLegWarn:Hide();
-	else
-		frameMissionsStatusLegOk:Hide();
-		frameMissionsStatusLegWarn:Show();
-	end
-end
-
-local function UpdateMissionsStatusBfa()
-	if (IsMissionAvailableWithReward(LE_FOLLOWER_TYPE_GARRISON_8_0, "BFA", 163036) == false) then
-		frameMissionsStatusBfaOk:Show();
-		frameMissionsStatusBfaWarn:Hide();
-	else
-		frameMissionsStatusBfaOk:Hide();
-		frameMissionsStatusBfaWarn:Show();
-	end
+local function GetMissionRewardCurrencyId(reward)
+	return reward.currencyID;
 end
 
 local function UpdateMissionsStatuses()
-	UpdateMissionsStatusWod();
-	UpdateMissionsStatusLeg();
-	UpdateMissionsStatusBfa();
+	UpdateMissionsStatus(
+		LE_FOLLOWER_TYPE_GARRISON_6_0,
+		'MedallionOfTheLegion',
+		128315,
+		GetMissionRewardItemId,
+		frameMissionsStatusMedallionOfTheLegionOk,
+		frameMissionsStatusMedallionOfTheLegionWarn);
+	UpdateMissionsStatus(
+		LE_FOLLOWER_TYPE_GARRISON_7_0,
+		'GladiatorMedallion',
+		137642,
+		GetMissionRewardItemId,
+		frameMissionsStatusGladiatorMedallionOk,
+		frameMissionsStatusGladiatorMedallionWarn);
+	UpdateMissionsStatus(
+		LE_FOLLOWER_TYPE_GARRISON_8_0,
+		'TimewarpedBadge',
+		1166,
+		GetMissionRewardCurrencyId,
+		frameMissionsStatusTimewarpedBadgeOk,
+		frameMissionsStatusTimewarpedBadgeWarn);
+	UpdateMissionsStatus(
+		LE_FOLLOWER_TYPE_GARRISON_8_0,
+		'PolishedPetCharm',
+		163036,
+		GetMissionRewardItemId,
+		frameMissionsStatusPolishedPetCharmOk,
+		frameMissionsStatusPolishedPetCharmWarn);
 end
 
 local eventFrame = CreateFrame("Frame", "HeroStatusFrame", UIParent);
