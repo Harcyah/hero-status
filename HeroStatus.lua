@@ -43,7 +43,7 @@ local function CreateStatusFrame(name, textureFileName, index, r, g, b, a)
 	local textureBackgroundName = "HeroStatus" .. name .. "TextureBackground";
 	local textureOverlayName = "HeroStatus" .. name .. "TextureOverlay";
 
-	local frame = CreateFrame("Frame", frameName, UIParent);
+	local frame = CreateFrame("Frame", frameName, UIParent, BackdropTemplateMixin and "BackdropTemplate");
 	frame:SetSize(ICON_WIDTH, ICON_HEIGHT);
 	frame:SetBackdrop({
 		bgFile = "Interface/Tooltips/UI-Tooltip-Background",
