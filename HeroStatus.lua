@@ -138,22 +138,6 @@ local SLOTS = {
 	"SecondaryHandSlot"
 }
 
-local TRANSMOG_SLOTS = {
-	[1]  = { slot = "HEADSLOT" },
-	[2]  = { slot = "SHOULDERSLOT" },
-	[3]  = { slot = "BACKSLOT" },
-	[4]  = { slot = "CHESTSLOT" },
-	[5]  = { slot = "TABARDSLOT" },
-	[6]  = { slot = "SHIRTSLOT" },
-	[7]  = { slot = "WRISTSLOT" },
-	[8]  = { slot = "HANDSSLOT" },
-	[9]  = { slot = "WAISTSLOT" },
-	[10] = { slot = "LEGSSLOT" },
-	[11] = { slot = "FEETSLOT" },
-	[12] = { slot = "MAINHANDSLOT" },
-	[13] = { slot = "SECONDARYHANDSLOT" }
-}
-
 local function IsRepaired()
 	for index, value in pairs(SLOTS) do
 		local slot = GetInventorySlotInfo(value)
@@ -264,21 +248,22 @@ local function IsDefaultTransmogApplied()
 		return false;
 	end
 
-	for index, value in pairs(TRANSMOG_SLOTS) do
-		local slot = TRANSMOG_SLOTS[index].slot;
-		local slotID = GetInventorySlotInfo(slot);
-		if (GetInventoryItemLink("player", slot) ~= nil) then
-			local expectedSourceID = appearanceSources[slotID]
-			local baseSourceID, baseVisualID, appliedSourceID, appliedVisualID = C_Transmog.GetSlotVisualInfo(slotID, LE_TRANSMOG_TYPE_APPEARANCE);
+	for key, transmogSlot in pairs(TRANSMOG_SLOTS) do
+		if transmogSlot.location:IsAppearance() then
+			local slotID = transmogSlot.location:GetSlotID();
+			if (GetInventoryItemLink("player", slotID) ~= nil) then
+				local expectedSourceID = appearanceSources[slotID];
+				local baseSourceID, baseVisualID, appliedSourceID, appliedVisualID = C_Transmog.GetSlotVisualInfo(transmogSlot.location);
 
-			if (expectedSourceID ~= baseSourceID and appliedSourceID == 0 and expectedSourceID ~= 0) then
-				Log('On slot ' .. slot .. ', expected ' .. tostring(expectedSourceID) .. ', but found 0');
-				return false
-			end
+				if (expectedSourceID ~= baseSourceID and appliedSourceID == 0 and expectedSourceID ~= 0) then
+					Log('On slot ' .. slot .. ', expected ' .. tostring(expectedSourceID) .. ', but found 0');
+					return false;
+				end
 
-			if (expectedSourceID ~= baseSourceID and appliedSourceID ~= 0 and appliedSourceID ~= expectedSourceID) then
-				Log('On slot ' .. slot .. ', expected ' .. tostring(expectedSourceID) .. ', but found ' .. tostring(appliedSourceID));
-				return false
+				if (expectedSourceID ~= baseSourceID and appliedSourceID ~= 0 and appliedSourceID ~= expectedSourceID) then
+					Log('On slot ' .. slot .. ', expected ' .. tostring(expectedSourceID) .. ', but found ' .. tostring(appliedSourceID));
+					return false;
+				end
 			end
 		end
 	end
