@@ -315,7 +315,7 @@ local function HasExpectedMissionReward(mission, expectedRewardFn, expectedRewar
 end
 
 local function UpdateMissionsStatus(expansionID, rewardName, expectedRewardID, expectedRewardFn, frameOk, frameWarn)
-	local missions = C_Garrison.GetAvailableMissions(expansionID);
+	local missions = C_Garrison.GetAvailableMissions(GetPrimaryGarrisonFollowerType(expansionID));
 	if (missions == nil) then
 		frameOk:Show();
 		frameWarn:Hide();
@@ -348,28 +348,28 @@ end
 
 local function UpdateMissionsStatuses()
 	UpdateMissionsStatus(
-		LE_FOLLOWER_TYPE_GARRISON_6_0,
+		Enum.GarrisonType.Type_6_0,
 		'MedallionOfTheLegion',
 		128315,
 		GetMissionRewardItemId,
 		frameMissionsStatusMedallionOfTheLegionOk,
 		frameMissionsStatusMedallionOfTheLegionWarn);
 	UpdateMissionsStatus(
-		LE_FOLLOWER_TYPE_GARRISON_7_0,
+		Enum.GarrisonType.Type_7_0,
 		'GladiatorMedallion',
 		137642,
 		GetMissionRewardItemId,
 		frameMissionsStatusGladiatorMedallionOk,
 		frameMissionsStatusGladiatorMedallionWarn);
 	UpdateMissionsStatus(
-		LE_FOLLOWER_TYPE_GARRISON_8_0,
+		Enum.GarrisonType.Type_8_0,
 		'TimewarpedBadge',
 		1166,
 		GetMissionRewardCurrencyId,
 		frameMissionsStatusTimewarpedBadgeOk,
 		frameMissionsStatusTimewarpedBadgeWarn);
 	UpdateMissionsStatus(
-		LE_FOLLOWER_TYPE_GARRISON_8_0,
+		Enum.GarrisonType.Type_8_0,
 		'PolishedPetCharm',
 		163036,
 		GetMissionRewardItemId,
