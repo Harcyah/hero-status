@@ -28,8 +28,8 @@ local function LogTable(table, indent)
 	end
 
 	for k, v in pairs(table) do
-		local formatting = string.rep("  ", indent) .. k .. ": "
-		if type(v) == "table" then
+		local formatting = string.rep('  ', indent) .. k .. ': '
+		if type(v) == 'table' then
 			Log(formatting)
 			LogTable(v, indent+1)
 		else
@@ -39,15 +39,15 @@ local function LogTable(table, indent)
 end
 
 local function CreateStatusFrame(name, textureFileName, index, r, g, b, a)
-	local frameName = "HeroStatus" .. name .. "Frame";
-	local textureBackgroundName = "HeroStatus" .. name .. "TextureBackground";
-	local textureOverlayName = "HeroStatus" .. name .. "TextureOverlay";
+	local frameName = 'HeroStatus' .. name .. 'Frame';
+	local textureBackgroundName = 'HeroStatus' .. name .. 'TextureBackground';
+	local textureOverlayName = 'HeroStatus' .. name .. 'TextureOverlay';
 
-	local frame = CreateFrame("Frame", frameName, UIParent, BackdropTemplateMixin and "BackdropTemplate");
+	local frame = CreateFrame('Frame', frameName, UIParent, BackdropTemplateMixin and 'BackdropTemplate');
 	frame:SetSize(ICON_WIDTH, ICON_HEIGHT);
 	frame:SetBackdrop({
-		bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-		edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+		bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
+		edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
 		tile = true,
 		tileSize = 32,
 		edgeSize = 10,
@@ -59,19 +59,19 @@ local function CreateStatusFrame(name, textureFileName, index, r, g, b, a)
 		}
 	});
 	frame:SetBackdropColor(0, 0, 0);
-	frame:SetPoint("CENTER");
+	frame:SetPoint('CENTER');
 	frame:SetMovable(false);
 	frame:EnableMouse(false);
-	frame:SetPoint("CENTER");
-	frame:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", X_OFFSET + (index * (ICON_WIDTH + SPACE)), Y_OFFSET);
+	frame:SetPoint('CENTER');
+	frame:SetPoint('BOTTOMLEFT', 'UIParent', 'BOTTOMLEFT', X_OFFSET + (index * (ICON_WIDTH + SPACE)), Y_OFFSET);
 	frame:Show();
 
-	local textureBackground = frame:CreateTexture(textureBackgroundName, "ARTWORK");
+	local textureBackground = frame:CreateTexture(textureBackgroundName, 'ARTWORK');
 	textureBackground:SetTexture(textureFileName);
 	textureBackground:SetDesaturated(1.0);
 	textureBackground:SetAllPoints(frame);
 
-	local textureOverlay = frame:CreateTexture(textureOverlayName, "OVERLAY");
+	local textureOverlay = frame:CreateTexture(textureOverlayName, 'OVERLAY');
 	textureOverlay:SetColorTexture(r, g, b, a);
 	textureOverlay:SetAllPoints(frame);
 
@@ -93,27 +93,27 @@ local function CreateEquipmentStatusFrame()
 end
 
 local function CreateTransmogStatusFrame()
-	return CreateStatusFrames('TransmogStatus', "Interface\\Icons\\garrison_building_armory.blp", INDEX_TRANSMOG_STATUS);
+	return CreateStatusFrames('TransmogStatus', 'Interface\\Icons\\garrison_building_armory.blp', INDEX_TRANSMOG_STATUS);
 end
 
 local function CreateJunkStatusFrame()
-	return CreateStatusFrames('JunkStatus', "Interface\\Icons\\Inv_Misc_Food_Lunchbox_White.blp", INDEX_JUNK_STATUS);
+	return CreateStatusFrames('JunkStatus', 'Interface\\Icons\\Inv_Misc_Food_Lunchbox_White.blp', INDEX_JUNK_STATUS);
 end
 
 local function CreateMissionsStatusMedallionOfTheLegionFrame()
-	return CreateStatusFrames('MissionsStatusMedallionOfTheLegion', "Interface\\Icons\\spell_shadow_demoniccircleteleport.blp", INDEX_MISSIONS_STATUS_MEDALLION_OF_THE_LEGION);
+	return CreateStatusFrames('MissionsStatusMedallionOfTheLegion', 'Interface\\Icons\\spell_shadow_demoniccircleteleport.blp', INDEX_MISSIONS_STATUS_MEDALLION_OF_THE_LEGION);
 end
 
 local function CreateMissionsStatusGladiatorMedallionFrame()
-	return CreateStatusFrames('MissionsStatusGladiatorMedallion', "Interface\\Icons\\ability_pvp_gladiatormedallion.blp", INDEX_MISSIONS_STATUS_GLADIATOR_MEDALLION);
+	return CreateStatusFrames('MissionsStatusGladiatorMedallion', 'Interface\\Icons\\ability_pvp_gladiatormedallion.blp', INDEX_MISSIONS_STATUS_GLADIATOR_MEDALLION);
 end
 
 local function CreateMissionsStatusPolishedPetCharmFrame()
-	return CreateStatusFrames('MissionsStatusPolishedPetCharm', "Interface\\Icons\\inv_currency_petbattle.blp", INDEX_MISSIONS_STATUS_POLISHED_PET_CHARM);
+	return CreateStatusFrames('MissionsStatusPolishedPetCharm', 'Interface\\Icons\\inv_currency_petbattle.blp', INDEX_MISSIONS_STATUS_POLISHED_PET_CHARM);
 end
 
 local function CreateMissionsStatusTimewarpedBadgeFrame()
-	return CreateStatusFrames('MissionsStatusTimewarpedBadge', "Interface\\Icons\\pvecurrency-justice.blp", INDEX_MISSIONS_STATUS_TIMEWARPED_BADGE);
+	return CreateStatusFrames('MissionsStatusTimewarpedBadge', 'Interface\\Icons\\pvecurrency-justice.blp', INDEX_MISSIONS_STATUS_TIMEWARPED_BADGE);
 end
 
 local frameRepairStatusOk, frameRepairStatusWarn = CreateRepairStatusFrame();
@@ -127,15 +127,15 @@ local frameMissionsStatusTimewarpedBadgeOk, frameMissionsStatusTimewarpedBadgeWa
 
 local SLOTS = {
 	'HeadSlot',
-	"ShoulderSlot",
-	"ChestSlot",
-	"WristSlot",
-	"HandsSlot",
-	"WaistSlot",
-	"LegsSlot",
-	"FeetSlot",
-	"MainHandSlot",
-	"SecondaryHandSlot"
+	'ShoulderSlot',
+	'ChestSlot',
+	'WristSlot',
+	'HandsSlot',
+	'WaistSlot',
+	'LegsSlot',
+	'FeetSlot',
+	'MainHandSlot',
+	'SecondaryHandSlot'
 }
 
 local function IsRepaired()
@@ -182,12 +182,12 @@ local function UpdateJunkStatus()
 end
 
 local function IsDefaultEquipmentSetValid()
-	local playerLevel = UnitLevel("player")
+	local playerLevel = UnitLevel('player')
 	if (playerLevel < 15) then
 		return true;
 	end
 
-	local equipmentSetID = C_EquipmentSet.GetEquipmentSetID("Default");
+	local equipmentSetID = C_EquipmentSet.GetEquipmentSetID('Default');
 	if (equipmentSetID == nil) then
 		return false;
 	end
@@ -220,7 +220,7 @@ local function UpdateEquipmentStatus()
 end
 
 local function IsDefaultTransmogApplied()
-	local playerLevel = UnitLevel("player")
+	local playerLevel = UnitLevel('player')
 	if (playerLevel < 15) then
 		return true;
 	end
@@ -251,7 +251,7 @@ local function IsDefaultTransmogApplied()
 	for key, transmogSlot in pairs(TRANSMOG_SLOTS) do
 		if transmogSlot.location:IsAppearance() then
 			local slotID = transmogSlot.location:GetSlotID();
-			if (GetInventoryItemLink("player", slotID) ~= nil) then
+			if (GetInventoryItemLink('player', slotID) ~= nil) then
 				local expectedSourceID = appearanceSources[slotID];
 				local baseSourceID, baseVisualID, appliedSourceID, appliedVisualID = C_Transmog.GetSlotVisualInfo(transmogSlot.location);
 
@@ -304,7 +304,7 @@ local function UpdateMissionsStatus(expansionID, rewardName, expectedRewardID, e
 	if (missions == nil) then
 		frameOk:Show();
 		frameWarn:Hide();
-		Log("no mission available for expansion " .. tostring(expansionID))
+		Log('no mission available for expansion ' .. tostring(expansionID))
 		return;
 	end
 
@@ -313,14 +313,14 @@ local function UpdateMissionsStatus(expansionID, rewardName, expectedRewardID, e
 		if (HasExpectedMissionReward(mission, expectedRewardFn, expectedRewardID) and mission.completed == false and mission.inProgress == false) then
 			frameOk:Hide();
 			frameWarn:Show();
-			Log("found mission " .. mission.name .. " with reward " .. rewardName)
+			Log('found mission ' .. mission.name .. ' with reward ' .. rewardName)
 			return;
 		end
 	end
 
 	frameOk:Show();
 	frameWarn:Hide();
-	Log("no mission found on expansion " .. tostring(expansionID) .. " for reward " .. rewardName)
+	Log('no mission found on expansion ' .. tostring(expansionID) .. ' for reward ' .. rewardName)
 end
 
 local function GetMissionRewardItemId(reward)
@@ -362,40 +362,40 @@ local function UpdateMissionsStatuses()
 		frameMissionsStatusPolishedPetCharmWarn);
 end
 
-local eventFrame = CreateFrame("Frame", "HeroStatusFrame", UIParent);
-eventFrame:RegisterEvent("BAG_UPDATE");
-eventFrame:RegisterEvent("EQUIPMENT_SETS_CHANGED");
-eventFrame:RegisterEvent("EQUIPMENT_SWAP_FINISHED");
-eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
-eventFrame:RegisterEvent("TRANSMOGRIFY_SUCCESS");
-eventFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
-eventFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY");
-eventFrame:RegisterEvent("TRANSMOG_OUTFITS_CHANGED");
-eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-eventFrame:RegisterEvent("GARRISON_MISSION_LIST_UPDATE");
+local eventFrame = CreateFrame('Frame', 'HeroStatusFrame', UIParent);
+eventFrame:RegisterEvent('BAG_UPDATE');
+eventFrame:RegisterEvent('EQUIPMENT_SETS_CHANGED');
+eventFrame:RegisterEvent('EQUIPMENT_SWAP_FINISHED');
+eventFrame:RegisterEvent('PLAYER_ENTERING_WORLD');
+eventFrame:RegisterEvent('TRANSMOGRIFY_SUCCESS');
+eventFrame:RegisterEvent('UNIT_INVENTORY_CHANGED');
+eventFrame:RegisterEvent('UPDATE_INVENTORY_DURABILITY');
+eventFrame:RegisterEvent('TRANSMOG_OUTFITS_CHANGED');
+eventFrame:RegisterEvent('ZONE_CHANGED_NEW_AREA');
+eventFrame:RegisterEvent('GARRISON_MISSION_LIST_UPDATE');
 
-eventFrame:SetScript("OnEvent", function(self, event, ...)
+eventFrame:SetScript('OnEvent', function(self, event, ...)
 
-	if (event == "BAG_UPDATE") then
+	if (event == 'BAG_UPDATE') then
 		UpdateJunkStatus();
 		UpdateEquipmentStatus();
 		UpdateTransmogStatus();
 	end
 
-	if (event == "EQUIPMENT_SETS_CHANGED") then
+	if (event == 'EQUIPMENT_SETS_CHANGED') then
 		UpdateEquipmentStatus();
 		UpdateTransmogStatus();
 	end
 
-	if (event == "EQUIPMENT_SWAP_FINISHED") then
+	if (event == 'EQUIPMENT_SWAP_FINISHED') then
 		UpdateEquipmentStatus();
 	end
 
-	if (event == "TRANSMOGRIFY_SUCCESS") then
+	if (event == 'TRANSMOGRIFY_SUCCESS') then
 		UpdateTransmogStatus();
 	end
 
-	if (event == "PLAYER_ENTERING_WORLD") then
+	if (event == 'PLAYER_ENTERING_WORLD') then
 		UpdateRepairStatus();
 		UpdateJunkStatus();
 		UpdateEquipmentStatus();
@@ -403,24 +403,24 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 		UpdateMissionsStatuses();
 	end
 
-	if (event == "UNIT_INVENTORY_CHANGED") then
+	if (event == 'UNIT_INVENTORY_CHANGED') then
 		UpdateEquipmentStatus();
 		UpdateTransmogStatus();
 	end
 
-	if (event == "UPDATE_INVENTORY_DURABILITY") then
+	if (event == 'UPDATE_INVENTORY_DURABILITY') then
 		UpdateRepairStatus();
 	end
 
-	if (event == "TRANSMOG_OUTFITS_CHANGED") then
+	if (event == 'TRANSMOG_OUTFITS_CHANGED') then
 		UpdateTransmogStatus();
 	end
 
-	if (event == "ZONE_CHANGED_NEW_AREA") then
+	if (event == 'ZONE_CHANGED_NEW_AREA') then
 		UpdateMissionsStatuses();
 	end
 
-	if (event == "GARRISON_MISSION_LIST_UPDATE") then
+	if (event == 'GARRISON_MISSION_LIST_UPDATE') then
 		UpdateMissionsStatuses();
 	end
 
