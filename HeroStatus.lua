@@ -1,4 +1,3 @@
-
 local ICON_WIDTH = 32;
 local ICON_HEIGHT = 32;
 local X_OFFSET = 20;
@@ -31,7 +30,7 @@ local function LogTable(table, indent)
 		local formatting = string.rep('  ', indent) .. k .. ': '
 		if type(v) == 'table' then
 			Log(formatting)
-			LogTable(v, indent+1)
+			LogTable(v, indent + 1)
 		else
 			Log(formatting .. tostring(v))
 		end
@@ -219,6 +218,14 @@ local function UpdateEquipmentStatus()
 	end
 end
 
+local function GetExpectedSourceID(location, slotInfo)
+	if location.modification == Enum.TransmogModification.Secondary then
+		return slotInfo.secondaryAppearanceID;
+	else
+		return slotInfo.appearanceID;
+	end
+end
+
 local function IsDefaultTransmogApplied()
 	local playerLevel = UnitLevel('player')
 	if (playerLevel < 15) then
@@ -226,42 +233,47 @@ local function IsDefaultTransmogApplied()
 	end
 
 	local outfits = C_TransmogCollection.GetOutfits();
-	if ( #outfits == 0 ) then
+	if (#outfits == 0) then
 		Log('Unable to find any outfit');
 		return false;
 	end
 
-	local id
-	for i = 1, #outfits do
-		if (outfits[i].name == 'Default') then
-			id = outfits[i].outfitID
+	local transmogSetId
+	for i, v in ipairs(outfits) do
+		local name, icon = C_TransmogCollection.GetOutfitInfo(v)
+		if (name == 'Default') then
+			transmogSetId = v
 		end
 	end
-	if (id == nil) then
+
+	if (transmogSetId == nil) then
 		Log('Unable to find default outfit');
 		return false;
 	end
 
-	local appearanceSources, mainHandEnchant, offHandEnchant = C_TransmogCollection.GetOutfitSources(id);
-	if (not appearanceSources) then
-		Log('No appearances in default outfit');
+	local transmogInfoList = C_TransmogCollection.GetOutfitItemTransmogInfoList(transmogSetId)
+	if (not transmogInfoList) then
+		Log('No transmog info list in default outfit');
 		return false;
 	end
 
-	for key, transmogSlot in pairs(TRANSMOG_SLOTS) do
-		if transmogSlot.location:IsAppearance() then
-			local slotID = transmogSlot.location:GetSlotID();
-			if (GetInventoryItemLink('player', slotID) ~= nil) then
-				local expectedSourceID = appearanceSources[slotID];
-				local baseSourceID, baseVisualID, appliedSourceID, appliedVisualID = C_Transmog.GetSlotVisualInfo(transmogSlot.location);
+	for key, slot in pairs(TRANSMOG_SLOTS) do
+		local location = slot.location
+		if location:IsAppearance() then
+			local slotID = location:GetSlotID();
+			local link = GetInventoryItemLink('player', slotID)
+			if (link ~= nil) then
+				local transmogInfoSlot = transmogInfoList[slotID]
+				local expectedSourceID = GetExpectedSourceID(location, transmogInfoSlot)
+				local baseSourceID, _, appliedSourceID, _ = C_Transmog.GetSlotVisualInfo(location);
 
 				if (expectedSourceID ~= baseSourceID and appliedSourceID == 0 and expectedSourceID ~= 0) then
-					Log('On slot ' .. slot .. ', expected ' .. tostring(expectedSourceID) .. ', but found 0');
+					Log('On slot ' .. slotID .. ', expected ' .. tostring(expectedSourceID) .. ', but found 0');
 					return false;
 				end
 
 				if (expectedSourceID ~= baseSourceID and appliedSourceID ~= 0 and appliedSourceID ~= expectedSourceID) then
-					Log('On slot ' .. slot .. ', expected ' .. tostring(expectedSourceID) .. ', but found ' .. tostring(appliedSourceID));
+					Log('On slot ' .. slotID .. ', expected ' .. tostring(expectedSourceID) .. ', but found ' .. tostring(appliedSourceID));
 					return false;
 				end
 			end
@@ -305,7 +317,7 @@ local function UpdateMissionsStatus(expansionID, rewardName, expectedRewardID, e
 		frameOk:Show();
 		frameWarn:Hide();
 		Log('no mission available for expansion ' .. tostring(expansionID))
-		return;
+		return ;
 	end
 
 	for i = 1, #missions do
@@ -314,7 +326,7 @@ local function UpdateMissionsStatus(expansionID, rewardName, expectedRewardID, e
 			frameOk:Hide();
 			frameWarn:Show();
 			Log('found mission ' .. mission.name .. ' with reward ' .. rewardName)
-			return;
+			return ;
 		end
 	end
 
