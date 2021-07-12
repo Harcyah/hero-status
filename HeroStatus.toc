@@ -1,5 +1,5 @@
 ## Title: HeroStatus
-## Interface: 90002
+## Interface: 90100
 ## Author: harcyah@gmail.com
 ## Notes: Display character status
 HeroStatus.lua
