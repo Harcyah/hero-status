@@ -308,7 +308,8 @@ local function HasExpectedMissionRewardFrom(rewards, expectedRewardFn, expectedR
 end
 
 local function HasExpectedMissionReward(mission, expectedRewardFn, expectedRewardID)
-	return HasExpectedMissionRewardFrom(mission.rewards, expectedRewardFn, expectedRewardID) or HasExpectedMissionRewardFrom(mission.overmaxRewards, expectedRewardFn, expectedRewardID);
+	return HasExpectedMissionRewardFrom(mission.rewards, expectedRewardFn, expectedRewardID)
+	    or HasExpectedMissionRewardFrom(mission.overmaxRewards, expectedRewardFn, expectedRewardID);
 end
 
 local function UpdateMissionsStatus(expansionID, rewardName, expectedRewardID, expectedRewardFn, frameOk, frameWarn)
