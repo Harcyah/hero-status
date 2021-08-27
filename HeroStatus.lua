@@ -261,6 +261,7 @@ local function IsDefaultTransmogApplied()
 		local location = slot.location
 		if location:IsAppearance() then
 			local slotID = location:GetSlotID();
+			local slotName = location:GetSlotName();
 			local link = GetInventoryItemLink('player', slotID)
 			if (link ~= nil) then
 				local transmogInfoSlot = transmogInfoList[slotID]
@@ -268,12 +269,12 @@ local function IsDefaultTransmogApplied()
 				local baseSourceID, _, appliedSourceID, _ = C_Transmog.GetSlotVisualInfo(location);
 
 				if (expectedSourceID ~= baseSourceID and appliedSourceID == 0 and expectedSourceID ~= 0) then
-					Log('On slot ' .. slotID .. ', expected ' .. tostring(expectedSourceID) .. ', but found 0');
+					Log('On slot ' .. slotName .. ', expected ' .. tostring(expectedSourceID) .. ', but found 0 ' .. ' -> ' .. link);
 					return false;
 				end
 
 				if (expectedSourceID ~= baseSourceID and appliedSourceID ~= 0 and appliedSourceID ~= expectedSourceID) then
-					Log('On slot ' .. slotID .. ', expected ' .. tostring(expectedSourceID) .. ', but found ' .. tostring(appliedSourceID));
+					Log('On slot ' .. slotName .. ', expected ' .. tostring(expectedSourceID) .. ', but found ' .. tostring(appliedSourceID) .. ' -> ' .. link);
 					return false;
 				end
 			end
